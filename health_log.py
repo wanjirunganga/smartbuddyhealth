@@ -15,7 +15,7 @@ def open_health_log(root, username, logout_callback):
 
     root = tk.Tk()
     root.title("Health Log")
-    root.geometry("450x600")
+    root.geometry("450x650")
     root.configure(bg="#fff5e6")
 
     filepath = os.path.join(DATA_DIR, f"{username}_healthlog.json")
@@ -29,6 +29,7 @@ def open_health_log(root, username, logout_callback):
     bp_var = tk.StringVar()
     temp_var = tk.StringVar()
     weight_var = tk.StringVar()
+    height_var = tk.StringVar()
     mood_var = tk.StringVar()
 
     # Title
@@ -44,6 +45,9 @@ def open_health_log(root, username, logout_callback):
     tk.Label(root, text="Weight (kg):", bg="#fff5e6").pack()
     tk.Entry(root, textvariable=weight_var).pack(pady=5)
 
+    tk.Label(root, text="Height (cm):", bg="#fff5e6").pack()
+    tk.Entry(root, textvariable=height_var).pack(pady=5)
+
     tk.Label(root, text="Mood:", bg="#fff5e6").pack()
     tk.Entry(root, textvariable=mood_var).pack(pady=5)
 
@@ -54,15 +58,16 @@ def open_health_log(root, username, logout_callback):
     def log_health():
         # Input validation
         if not (bp_var.get().strip() and temp_var.get().strip() and 
-                weight_var.get().strip() and mood_var.get().strip()):
+                weight_var.get().strip() and height_var.get().strip() and mood_var.get().strip()):
             messagebox.showerror("Input Error", "Please fill in all fields.")
             return
 
         try:
             float(temp_var.get())
             float(weight_var.get())
+            float(height_var.get())
         except ValueError:
-            messagebox.showerror("Input Error", "Temperature and Weight must be numbers.")
+            messagebox.showerror("Input Error", "Temperature, Weight, and Height must be numbers.")
             return
 
         # Create entry
@@ -71,6 +76,7 @@ def open_health_log(root, username, logout_callback):
             "bp": bp_var.get(),
             "temp": temp_var.get(),
             "weight": weight_var.get(),
+            "height": height_var.get(),
             "mood": mood_var.get()
         }
         logs.append(entry)
@@ -83,6 +89,7 @@ def open_health_log(root, username, logout_callback):
         bp_var.set("")
         temp_var.set("")
         weight_var.set("")
+        height_var.set("")
         mood_var.set("")
 
         refresh_display()
@@ -92,7 +99,7 @@ def open_health_log(root, username, logout_callback):
         for entry in logs[-5:][::-1]:
             display.insert(tk.END, (
                 f"{entry['date']} | BP: {entry['bp']}, Temp: {entry['temp']}°C, "
-                f"Weight: {entry['weight']}kg, Mood: {entry['mood']}\n"
+                f"Weight: {entry['weight']}kg, Height: {entry['height']}cm, Mood: {entry['mood']}\n"
             ))
 
     # Buttons
